@@ -1,0 +1,63 @@
+   name: CI Pipeline                                                                                                                                                  
+                                                                                                                                                                      
+   # When to run                                                                                                                                                      
+   on:                                                                                                                                                                
+     push:                                                                                                                                                            
+       branches: [main, develop]                                                                                                                                      
+     pull_request:                                                                                                                                                    
+       branches: [main]                                                                                                                                               
+                                                                                                                                                                      
+   # Jobs to run                                                                                                                                                      
+   jobs:                                                                                                                                                              
+     build-and-test:                                                                                                                                                  
+       runs-on: ubuntu-latest                                                                                                                                         
+                                                                                                                                                                      
+       steps:                                                                                                                                                         
+         # 1. Checkout code                                                                                                                                           
+         - uses: actions/checkout@v4                                                                                                                                  
+                                                                                                                                                                      
+         # 2. Setup environment                                                                                                                                       
+         - name: Setup Python                                                                                                                                         
+           uses: actions/setup-python@v5                                                                                                                              
+           with:                                                                                                                                                      
+             python-version: '3.11'                                                                                                                                   
+                                                                                                                                                                      
+         # 3. Install dependencies                                                                                                                                    
+         - name: Install                                                                                                                                              
+           run: |                                                                                                                                                     
+             pip install -r requirements.txt                                                                                                                          
+             pip install pytest flake8                                                                                                                                
+                                                                                                                                                                      
+         # 4. Run linting                                                                                                                                             
+         - name: Lint                                                                                                                                                 
+           run: flake8 . --max-line-length=127                                                                                                                        
+                                                                                                                                                                      
+         # 5. Run tests                                                                                                                                               
+         - name: Test                                                                                                                                                 
+           run: pytest                                                                                                                                                
+                                                                                                                                                                      
+         # 6. Build artifact (optional)                                                                                                                               
+         - name: Build                                                                                                                                                
+           run: |                                                                                                                                                     
+             python setup.py build                                                                                                                                    
+             echo "Build complete!"  
+     deploy:                                                                                                                                                          
+       needs: build-and-test  # Only deploy if tests pass                                                                                                             
+       runs-on: ubuntu-latest                                                                                                                                         
+       if: github.ref == 'refs/heads/main'  # Only on main branch                                                                                                     
+                                                                                                                                                                      
+       steps:                                                                                                                                                         
+         - uses: actions/checkout@v4                                                                                                                                  
+                                                                                                                                                                      
+         # Deploy to staging                                                                                                                                          
+         - name: Deploy to Staging                                                                                                                                    
+           run: |                                                                                                                                                     
+             echo "Deploying to staging..."                                                                                                                           
+             # Add your deployment commands here                                                                                                                      
+             # e.g., docker push, kubectl apply, etc.                                                                                                                 
+                                                                                                                                                                      
+         # Deploy to production (manual approval)                                                                                                                     
+         - name: Deploy to Production                                                                                                                                 
+           if: github.event_name == 'push'                                                                                                                            
+           run: |                                                                                                                                                     
+             echo "Deploying to production..."
