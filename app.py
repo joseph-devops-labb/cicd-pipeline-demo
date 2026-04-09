@@ -1,5 +1,5 @@
 """Simple Flask application for CI/CD demo."""
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 
 app = Flask(__name__)
 
@@ -16,16 +16,28 @@ def health():
     return jsonify({'status': 'healthy'})
 
 
-@app.route('/add/<int:a>/<int:b>')
-def add(a, b):
-    """Add two numbers."""
+@app.route('/add')
+def add():
+    """Add two numbers using query parameters."""
+    a = int(request.args.get('a', 0))
+    b = int(request.args.get('b', 0))
     return jsonify({'result': a + b})
 
 
-@app.route('/subtract/<int:a>/<int:b>')
-def subtract(a, b):
-    """Subtract two numbers."""
+@app.route('/subtract')
+def subtract():
+    """Subtract two numbers using query parameters."""
+    a = int(request.args.get('a', 0))
+    b = int(request.args.get('b', 0))
     return jsonify({'result': a - b})
+
+
+@app.route('/multiply')
+def multiply():
+    """Multiply two numbers using query parameters."""
+    a = int(request.args.get('a', 0))
+    b = int(request.args.get('b', 0))
+    return jsonify({'result': a * b})
 
 
 if __name__ == '__main__':
