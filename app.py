@@ -40,5 +40,15 @@ def multiply():
     return jsonify({'result': a * b})
 
 
+@app.route('/divide')
+def divide():
+    """Divide two numbers using query parameters."""
+    a = int(request.args.get('a', 0))
+    b = int(request.args.get('b', 0))
+    if b == 0:
+        return jsonify({'error': 'Cannot divide by zero'}), 400
+    return jsonify({'result': a / b})
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)

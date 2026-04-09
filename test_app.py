@@ -81,3 +81,28 @@ def test_multiply_by_zero(client):
     assert response.status_code == 200
     data = response.get_json()
     assert data['result'] == 0
+
+
+def test_divide(client):
+    """Test the divide endpoint."""
+    response = client.get('/divide?a=20&b=4')
+    assert response.status_code == 200
+    data = response.get_json()
+    assert data['result'] == 5.0
+
+
+def test_divide_negative(client):
+    """Test dividing negative numbers."""
+    response = client.get('/divide?a=-20&b=4')
+    assert response.status_code == 200
+    data = response.get_json()
+    assert data['result'] == -5.0
+
+
+def test_divide_by_zero(client):
+    """Test dividing by zero returns error."""
+    response = client.get('/divide?a=20&b=0')
+    assert response.status_code == 400
+    data = response.get_json()
+    assert 'error' in data
+    assert 'Cannot divide by zero' in data['error']
