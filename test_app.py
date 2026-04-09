@@ -29,7 +29,7 @@ def test_health(client):
 
 def test_add(client):
     """Test the add endpoint."""
-    response = client.get('/add/3/5')
+    response = client.get('/add?a=3&b=5')
     assert response.status_code == 200
     data = response.get_json()
     assert data['result'] == 8
@@ -37,7 +37,7 @@ def test_add(client):
 
 def test_add_negative(client):
     """Test adding negative numbers."""
-    response = client.get('/add/-3/-5')
+    response = client.get('/add?a=-3&b=-5')
     assert response.status_code == 200
     data = response.get_json()
     assert data['result'] == -8
@@ -45,7 +45,7 @@ def test_add_negative(client):
 
 def test_subtract(client):
     """Test the subtract endpoint."""
-    response = client.get('/subtract/10/3')
+    response = client.get('/subtract?a=10&b=3')
     assert response.status_code == 200
     data = response.get_json()
     assert data['result'] == 7
@@ -53,7 +53,31 @@ def test_subtract(client):
 
 def test_subtract_negative(client):
     """Test subtracting negative numbers."""
-    response = client.get('/subtract/5/-3')
+    response = client.get('/subtract?a=5&b=-3')
     assert response.status_code == 200
     data = response.get_json()
     assert data['result'] == 8
+
+
+def test_multiply(client):
+    """Test the multiply endpoint."""
+    response = client.get('/multiply?a=4&b=5')
+    assert response.status_code == 200
+    data = response.get_json()
+    assert data['result'] == 20
+
+
+def test_multiply_negative(client):
+    """Test multiplying negative numbers."""
+    response = client.get('/multiply?a=-3&b=-4')
+    assert response.status_code == 200
+    data = response.get_json()
+    assert data['result'] == 12
+
+
+def test_multiply_by_zero(client):
+    """Test multiplying by zero."""
+    response = client.get('/multiply?a=5&b=0')
+    assert response.status_code == 200
+    data = response.get_json()
+    assert data['result'] == 0
